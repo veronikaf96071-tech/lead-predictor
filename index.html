@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeadPredictor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ======================= ЗАГЛАВНА ЧАСТ ======================= -->
+  <header class="app-header">
+    <div class="logo-icon">
+      <!-- Иконка "фуния" (funnel) - нарисувана със SVG -->
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M3 4h18l-7 8v7l-4 2v-9z" fill="#1b2534"></path>
+      </svg>
+    </div>
+    <h1 class="logo-text"><span class="logo-bold">Lead</span><span class="logo-light">Predictor</span></h1>
+  </header>
+
+  <!-- ======================= ОСНОВНО РАЗПОЛОЖЕНИЕ ======================= -->
+  <main class="layout">
+
+    <!-- ---------- ЛЯВА КОЛОНА: настройки ---------- -->
+    <aside class="panel settings-panel">
+
+      <div class="field">
+        <label class="field-label" for="languageSelect" data-i18n="language">Language</label>
+        <div class="input-wrap">
+          <select id="languageSelect" class="control">
+            <option value="en">&#127482;&#127480; English</option>
+            <option value="bg">&#127463;&#127468; Български</option>
+            <option value="de">&#127465;&#127466; Deutsch</option>
+            <option value="es">&#127466;&#127480; Español</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="currencySelect" data-i18n="currency">Currency</label>
+        <div class="input-wrap">
+          <select id="currencySelect" class="control">
+            <option value="USD">$ US Dollar</option>
+            <option value="EUR">&euro; Euro</option>
+            <option value="GBP">&pound; British Pound</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="startDate" data-i18n="campaignStart">Campaign Start</label>
+        <div class="input-wrap">
+          <input type="date" id="startDate" class="control" value="2026-05-08">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="endDate" data-i18n="campaignEnd">Campaign End</label>
+        <div class="input-wrap">
+          <input type="date" id="endDate" class="control" value="2026-11-04">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="totalRevenue" data-i18n="totalRevenue">Total Revenue</label>
+        <div class="input-wrap has-prefix">
+          <span class="input-prefix currency-symbol">$</span>
+          <input type="number" id="totalRevenue" class="control" value="10000" min="0" step="100">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="orderValue" data-i18n="avgOrderValue">Avg. Order Value</label>
+        <div class="input-wrap has-prefix">
+          <span class="input-prefix currency-symbol">$</span>
+          <input type="number" id="orderValue" class="control" value="1000" min="1" step="10">
+        </div>
+      </div>
+
+      <p class="error-message" id="errorMessage"></p>
+
+    </aside>
+
+    <!-- ---------- ДЯСНА КОЛОНА: резултати ---------- -->
+    <section class="content">
+
+      <!-- Горна карта: графика + трите показателя -->
+      <div class="panel results-panel">
+
+        <div class="chart">
+          <div class="chart-y-title" data-i18n="months">Months</div>
+
+          <div class="chart-plot">
+            <!-- Вертикалните помощни линии -->
+            <div class="grid-layer" id="gridLayer"></div>
+            <!-- Редовете с колони се генерират от JavaScript -->
+            <div class="chart-rows" id="chartRows"></div>
+          </div>
+
+          <div class="chart-x-axis" id="chartAxis">
+            <!-- Надписите по хоризонталната ос се генерират от JavaScript -->
+          </div>
+
+          <div class="chart-tooltip" id="chartTooltip"></div>
+        </div>
+
+        <div class="stats">
+
+          <article class="stat-card stat-prospects">
+            <div class="stat-top">
+              <span class="stat-title">
+                <span class="stat-icon">&#128193;</span>
+                <span data-i18n="prospects">Prospects</span>
+              </span>
+              <span class="stat-percent" id="prospectsPercent">100%</span>
+            </div>
+            <div class="stat-value" id="prospectsValue">125</div>
+            <div class="stat-bar"><div class="stat-bar-fill" id="prospectsBar"></div></div>
+          </article>
+
+          <article class="stat-card stat-leads">
+            <div class="stat-top">
+              <span class="stat-title">
+                <span class="stat-icon">&#128100;</span>
+                <span data-i18n="leads">Leads</span>
+              </span>
+              <span class="stat-percent" id="leadsPercent">20%</span>
+            </div>
+            <div class="stat-value" id="leadsValue">25</div>
+            <div class="stat-bar"><div class="stat-bar-fill" id="leadsBar"></div></div>
+          </article>
+
+          <article class="stat-card stat-customers">
+            <div class="stat-top">
+              <span class="stat-title">
+                <span class="stat-icon">&#127942;</span>
+                <span data-i18n="customers">Customers</span>
+              </span>
+              <span class="stat-percent" id="customersPercent">8%</span>
+            </div>
+            <div class="stat-value" id="customersValue">10</div>
+            <div class="stat-bar"><div class="stat-bar-fill" id="customersBar"></div></div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- Долна карта: двата плъзгача -->
+      <div class="panel sliders-panel">
+
+        <div class="slider-field">
+          <label class="field-label" for="leadRate" data-i18n="leadResponseRate">Lead Response Rate</label>
+          <input type="range" id="leadRate" class="slider" min="1" max="100" step="0.01" value="40">
+          <div class="slider-value" id="leadRateValue">40.00%</div>
+        </div>
+
+        <div class="slider-field">
+          <label class="field-label" for="prospectRate" data-i18n="prospectResponseRate">Prospect Response Rate</label>
+          <input type="range" id="prospectRate" class="slider" min="1" max="100" step="0.01" value="20">
+          <div class="slider-value" id="prospectRateValue">20.00%</div>
+        </div>
+
+      </div>
+
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
